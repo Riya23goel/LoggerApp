@@ -1,25 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { useState } from "react";
+import axios from 'axios';
 
-function App() {
+export default function App() {
+    const [val, setValue] = useState("");
+    const [diff, setDiff] = useState("");
+
+    async function saveStaticDataToFile () {
+        const res = await axios({
+          method: 'get',
+          url: `http://localhost:5001/getLogs`,
+          params: {
+            data: val
+          },
+        });
+        if(res.data === ""){
+          setDiff("NO DIFF");
+        } else 
+          setDiff(res.data);
+    }
+
+    const saveData = (event) => {
+        setValue(event.target.value);
+    }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <input placeholder="text to save" onChange={saveData}></input>
+      <button type="button" onClick={saveStaticDataToFile}>Save</button>
+      <br></br>
+      <br></br>
+      <br></br>
+      {diff && <div>{diff}</div>}
     </div>
   );
 }
-
-export default App;
